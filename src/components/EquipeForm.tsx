@@ -16,20 +16,25 @@ export default function EquipeForm({ equipe, idTorneio, onEquipeCriada }: { equi
 
   const onSubmit = async (data: any) => {
     try {
-      if (equipe) {
-        await atualizarEquipe(equipe.id, data);
-        alert('Equipe atualizada com sucesso!');
-      } else {
-        await cadastrarEquipe({ ...data, id_torneio: idTorneio });
-        alert('Equipe cadastrada com sucesso!');
-      }
-      reset();
-      onEquipeCriada();
+        if (!idTorneio) {
+            alert("Erro: ID do torneio está indefinido.");
+            return;
+        }
+
+        if (equipe?.id) {
+            await atualizarEquipe(equipe.id, { ...data, id_torneio: idTorneio });
+            alert("Equipe atualizada com sucesso!");
+        } else {
+            await cadastrarEquipe({ ...data, id_torneio: idTorneio });
+            alert("Equipe cadastrada com sucesso!");
+        }
+
+        reset();
+        onEquipeCriada();
     } catch (error) {
-      console.error('Erro ao salvar equipe:', error);
-      alert('Erro ao salvar equipe.');
+        alert("Erro ao salvar equipe.");
     }
-  };
+};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">

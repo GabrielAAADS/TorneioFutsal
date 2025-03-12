@@ -53,6 +53,7 @@ export default function Equipes({ idTorneio, onEquipeAlterada }: { idTorneio: st
     }
 };
 
+console.log("ID do Torneio passado para EquipeForm:", idTorneio);
 
   return (
     <div className="p-4">

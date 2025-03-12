@@ -6,7 +6,6 @@ const getAuthHeaders = () => {
 };
 
 export const cadastrarTorneio = async (data: FormData) => {
-  console.log("Dados enviados para API:", data.get("img_local"));
   return api.post('/torneio', data, { headers: { 'Content-Type': 'multipart/form-data', ...getAuthHeaders() } });
 };
 
