@@ -172,6 +172,10 @@ export default function Torneios() {
           <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
           <Dialog.Content className="fixed bg-white p-6 rounded shadow-md inset-1/3">
             <Dialog.Title className="text-lg font-bold">Gerenciar Equipes</Dialog.Title>
+            <Dialog.Description className="text-sm text-gray-600">
+              Selecione ou adicione equipes ao torneio.
+            </Dialog.Description>
+
             {loadingEquipes ? (
               <p>Carregando equipes...</p>
             ) : torneioSelecionado ? (

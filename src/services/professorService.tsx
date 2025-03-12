@@ -1,29 +1,34 @@
 import api from './api';
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).token : null;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export const cadastrarProfessor = async (data: { nome: string; cref: string; email: string; senha: string }) => {
-  return api.post('/professor', data);
+  return api.post('/professor', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const loginProfessor = async (data: { email: string; senha: string }) => {
-  return api.post('/professor/login', data);
+  return api.post('/professor/login', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const buscarProfessores = async () => {
-  return api.get('/professor');
+  return api.get('/professor', { headers: { ...getAuthHeaders() } });
 };
 
 export const buscarProfessorPorID = async (id: string) => {
-  return api.get(`/professor/${id}`);
+  return api.get(`/professor/${id}`, { headers: { ...getAuthHeaders() } });
 };
 
 export const atualizarProfessor = async (data: { nome?: string; cref?: string }) => {
-  return api.put('/professor', data);
+  return api.put('/professor', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const editarEmailSenha = async (data: { email?: string; senha?: string }) => {
-  return api.patch('/professor', data);
+  return api.patch('/professor', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const excluirProfessor = async () => {
-  return api.delete('/professor');
+  return api.delete('/professor', { headers: { ...getAuthHeaders() } });
 };

@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 import { loginProfessor } from "../services/professorService";
-import { useNavigate } from "react-router-dom";
 
 interface User {
   id: string;
@@ -11,7 +10,7 @@ interface User {
 
 interface AuthContextProps {
   user: User | null;
-  login: (email: string, senha: string) => Promise<boolean>;
+  login: (email: string, senha: string, onLoginSuccess: () => void) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -19,7 +18,6 @@ export const AuthContext = createContext<AuthContextProps>({} as AuthContextProp
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -28,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = async (email: string, senha: string): Promise<boolean> => {
+  const login = async (email: string, senha: string, onLoginSuccess: () => void): Promise<boolean> => {
     try {
       const response = await loginProfessor({ email, senha });
       const { token, professor } = response.data;
@@ -42,8 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
-      navigate("/torneios", { replace: true });
       
+      onLoginSuccess();
+
       return true;
     } catch (error) {
       console.error("Erro no login:", error);
@@ -55,7 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login", { replace: true });
   };
 
   return (

@@ -1,21 +1,26 @@
 import api from './api';
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).token : null;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export const cadastrarEquipe = async (data: { nome: string; lema?: string; id_torneio: string }) => {
-  return api.post('/equipe', data);
+  return api.post('/equipe', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const buscarEquipes = async () => {
-  return api.get('/equipe');
+  return api.get('/equipe', { headers: { ...getAuthHeaders() } });
 };
 
 export const buscarEquipePorID = async (id: string) => {
-  return api.get(`/equipe/${id}`);
+  return api.get(`/equipe/${id}`, { headers: { ...getAuthHeaders() } });
 };
 
 export const atualizarEquipe = async (id: string, data: { nome?: string; lema?: string }) => {
-  return api.put(`/equipe/${id}`, data);
+  return api.put(`/equipe/${id}`, data, { headers: { ...getAuthHeaders() } });
 };
 
 export const excluirEquipe = async (id: string) => {
-  return api.delete(`/equipe/${id}`);
+  return api.delete(`/equipe/${id}`, { headers: { ...getAuthHeaders() } });
 };

@@ -1,14 +1,23 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, senha);
+    
+    const success = await login(email, senha, () => {
+      navigate("/torneios", { replace: true });
+    });
+
+    if (!success) {
+      alert("Falha no login");
+    }
   };
 
   return (
