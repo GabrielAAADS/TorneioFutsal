@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
@@ -10,7 +12,7 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const success = await login(email, senha, () => {
       navigate("/torneios", { replace: true });
     });
@@ -21,27 +23,54 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-bold mb-4">Login</h2>
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 w-full mb-2"
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          className="border p-2 w-full mb-4"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">
-          Entrar
-        </button>
-      </form>
+    <div className="w-screen h-screen flex flex-col bg-[#515070]"> {/* Cor de fundo única aplicada */}
+      {/* Header fixo ocupando toda a largura */}
+      <div className="w-full fixed top-0 left-0">
+        <Header />
+      </div>
+
+      {/* Container principal que ocupa toda a tela */}
+      <div className="flex flex-col items-center justify-center flex-grow mt-16">
+        {/* Seção de fundo com o texto */}
+        <div className="w-full max-w-2xl h-[210px] bg-[#515070] flex flex-col items-center justify-center relative">
+          <div className="text-center text-white font-bold font-['Montserrat']">
+            <h1 className="text-4xl">FUTSAL</h1>
+            <h2 className="text-lg">TOURNAMENT REGISTRATION</h2>
+          </div>
+        </div>
+
+        {/* Formulário de login */}
+        <form onSubmit={handleLogin} className="w-[300px] mt-6">
+          <label className="block text-white font-bold">E-MAIL</label>
+          <input
+            type="email"
+            placeholder="Digite seu e-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded mb-4"
+          />
+
+          <label className="block text-white font-bold">SENHA</label>
+          <input
+            type="password"
+            placeholder="Digite sua senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            className="w-full p-2 border rounded mb-6"
+          />
+
+          <button type="submit" className="w-full bg-[#ff8e6e] text-white py-2 rounded">
+            LOGIN
+          </button>
+
+          <p className="text-center text-white mt-4 cursor-pointer">Esqueci minha senha</p>
+        </form>
+      </div>
+
+      {/* Footer fixo ocupando toda a largura */}
+      <div className="w-full fixed bottom-0 left-0">
+        <Footer />
+      </div>
     </div>
   );
 }
