@@ -4,17 +4,28 @@ import { cadastrarTorneio } from '../services/torneioService';
 import { useState } from 'react';
 import * as z from 'zod';
 
-
 const schema = z.object({
-    descricao: z.string().min(3, 'A descrição deve ter pelo menos 3 caracteres'),
-    data: z.string(),
-    campus: z.string().min(3, 'O campus deve ter pelo menos 3 caracteres'),
-    latitude: z.string().refine((val) => !isNaN(Number(val)), 'Latitude deve ser um número'),
-    longitude: z.string().refine((val) => !isNaN(Number(val)), 'Longitude deve ser um número'),
-    img_local: z
-      .instanceof(FileList) // 📸 Garante que seja um arquivo
-      .refine((files) => files.length > 0, 'A imagem é obrigatória'), 
+      descricao: z.string().min(3, 'A descrição deve ter pelo menos 3 caracteres'),
+      data: z.string().refine(
+        (val) => !isNaN(Date.parse(val)),
+        {
+          message: 'Data inválida! Escolha uma data válida.',
+        }
+      ),
+      campus: z.string().min(3, 'O campus deve ter pelo menos 3 caracteres'),
+      latitude: z.string().refine(
+        (val) => !isNaN(Number(val)),
+        'Latitude deve ser um número válido'
+      ),
+      longitude: z.string().refine(
+        (val) => !isNaN(Number(val)),
+        'Longitude deve ser um número válido'
+      ),
+      img_local: z
+        .instanceof(FileList)
+        .refine((files) => files.length > 0, 'A imagem é obrigatória'),
     });
+    
 
   export default function TorneioForm({ onTorneioCriado }: { onTorneioCriado: () => void }) {
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
@@ -31,8 +42,14 @@ const schema = z.object({
       }
   };  
   
-    const onSubmit = async (data: any) => {
+  const onSubmit = async (data: any) => {
       try {
+
+        if (isNaN(Date.parse(data.data))) {
+          alert("Erro: Data inválida! Escolha uma data correta.");
+          return;
+        }
+        
         const formData = new FormData();
         formData.append('descricao', data.descricao);
         formData.append('data', data.data);
@@ -74,8 +91,6 @@ const schema = z.object({
 
         <input {...register('longitude')} placeholder="Longitude" className="border p-2 w-full" />
         {errors.longitude && <p className="text-red-500">{errors.longitude.message}</p>}
-
-        {/* <input type="file" accept="image/*" onChange={handleFileChange} className="border p-2 w-full" /> */}
 
         <input
           type="file"

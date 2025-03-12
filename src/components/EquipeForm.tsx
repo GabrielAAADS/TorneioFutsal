@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cadastrarEquipe, atualizarEquipe } from '../services/equipeService';
 import * as z from 'zod';
+import { useNavigate } from 'react-router-dom';
 
 const schema = z.object({
   nome: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres'),
@@ -9,6 +10,7 @@ const schema = z.object({
 });
 
 export default function EquipeForm({ equipe, idTorneio, onEquipeCriada }: { equipe?: any; idTorneio: string; onEquipeCriada: () => void }) {
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(schema),
     defaultValues: equipe || { nome: '', lema: '' },
@@ -43,6 +45,16 @@ export default function EquipeForm({ equipe, idTorneio, onEquipeCriada }: { equi
 
       <input {...register('lema')} placeholder="Lema" className="border p-2 w-full" />
       {errors.lema && <p className="text-red-500">{String(errors.lema.message)}</p>}
+
+      {equipe?.id && (
+        <button
+          type="button"
+          onClick={() => navigate(`/equipe/${equipe.id}/informacoes`)}
+          className="bg-gray-500 text-white p-2 rounded w-full"
+        >
+          Detalhes
+        </button>
+      )}
 
       <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">
         {equipe ? 'Atualizar' : 'Cadastrar'}

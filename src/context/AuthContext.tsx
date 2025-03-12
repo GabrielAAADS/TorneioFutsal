@@ -18,7 +18,7 @@ export const AuthContext = createContext<AuthContextProps>({} as AuthContextProp
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-
+  
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -29,12 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, senha: string, onLoginSuccess: () => void): Promise<boolean> => {
     try {
       const response = await loginProfessor({ email, senha });
-      const { token, professor } = response.data;
+      console.log(response.data)
+      const { token, id, nome } = response.data;
 
       const userData = {
-        id: professor.id,
-        nome: professor.nome,
-        email: professor.email,
+        id,
+        nome,
+        email,
         token: token,
       };
 

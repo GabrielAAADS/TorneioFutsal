@@ -5,6 +5,8 @@ import { AuthContext } from '../context/AuthContext';
 import TorneioForm from '../components/TorneioForm';
 import Equipes from './Equipes';
 import * as Dialog from '@radix-ui/react-dialog';
+import { useNavigate } from 'react-router-dom';
+import { FaUserCircle } from "react-icons/fa";
 
 interface Torneio {
   id: string;
@@ -28,6 +30,7 @@ export default function Torneios() {
   const [isManageOpen, setIsManageOpen] = useState(false);
   const [loadingEquipes, setLoadingEquipes] = useState(false);
   const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     carregarTorneios();
@@ -97,6 +100,17 @@ export default function Torneios() {
 
   return (
     <div className="p-4">
+
+      <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
+        <h1 className="text-lg font-bold">Gestão de Torneios</h1>
+        {user && (
+          <FaUserCircle
+            className="text-3xl cursor-pointer"
+            onClick={() => navigate("/professor/detalhes")}
+          />
+        )}
+      </nav>
+        
       <button onClick={logout} className="bg-red-500 text-white p-2 rounded">
         Sair
       </button>
