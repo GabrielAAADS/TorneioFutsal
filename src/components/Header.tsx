@@ -1,15 +1,34 @@
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { FaBars, FaUserCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 export default function Header() {
-    return (
-      <header className="w-full h-[60px] bg-white flex justify-between items-center px-4">
-        <div className="space-y-1">
-          <div className="w-6 h-1 bg-[#515070] rounded"></div>
-          <div className="w-6 h-1 bg-[#515070] rounded"></div>
-          <div className="w-6 h-1 bg-[#515070] rounded"></div>
-        </div>
-        <div className="w-[34px] h-[34px] bg-[#515070] flex items-center justify-center">
-          <div className="w-[17.67px] h-[16.42px] bg-white"></div>
-        </div>
-      </header>
-    );
-  }
-  
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  return (
+    <header className="w-full h-[60px] bg-gray-800 flex justify-between items-center px-6 shadow-md">
+      <FaBars 
+        className="text-white text-2xl cursor-pointer hover:text-gray-400 transition duration-200"
+        onClick={() => navigate("/torneios")} 
+      />
+
+      <div className="flex items-center space-x-4">
+        {user && (
+          <FaUserCircle
+            className="text-white text-3xl cursor-pointer hover:text-gray-400 transition duration-200"
+            onClick={() => navigate("/professor/detalhes")}
+          />
+        )}
+
+        <button 
+          onClick={logout} 
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200"
+        >
+          Sair
+        </button>
+      </div>
+    </header>
+  );
+}

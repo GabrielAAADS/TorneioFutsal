@@ -18,20 +18,13 @@ export default function Login() {
     });
 
     if (!success) {
-      alert("Falha no login");
+      alert("Erro ao fazer login. Verifique suas credenciais.");
     }
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#515070]"> {/* Cor de fundo única aplicada */}
-      {/* Header fixo ocupando toda a largura */}
-      <div className="w-full fixed top-0 left-0">
-        <Header />
-      </div>
-
-      {/* Container principal que ocupa toda a tela */}
+    <div className="w-screen h-screen flex flex-col bg-[#515070]">
       <div className="flex flex-col items-center justify-center flex-grow mt-16">
-        {/* Seção de fundo com o texto */}
         <div className="w-full max-w-2xl h-[210px] bg-[#515070] flex flex-col items-center justify-center relative">
           <div className="text-center text-white font-bold font-['Montserrat']">
             <h1 className="text-4xl">FUTSAL</h1>
@@ -39,9 +32,10 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Formulário de login */}
-        <form onSubmit={handleLogin} className="w-[300px] mt-6">
-          <label className="block text-white font-bold">E-MAIL</label>
+        <form onSubmit={handleLogin} className="w-[300px] mt-6 bg-white p-6 rounded shadow-md">
+          <h2 className="text-xl font-bold text-center mb-4">Login</h2>
+
+          <label className="block text-gray-700 font-bold">E-MAIL</label>
           <input
             type="email"
             placeholder="Digite seu e-mail"
@@ -50,7 +44,7 @@ export default function Login() {
             className="w-full p-2 border rounded mb-4"
           />
 
-          <label className="block text-white font-bold">SENHA</label>
+          <label className="block text-gray-700 font-bold">SENHA</label>
           <input
             type="password"
             placeholder="Digite sua senha"
@@ -59,15 +53,16 @@ export default function Login() {
             className="w-full p-2 border rounded mb-6"
           />
 
-          <button type="submit" className="w-full bg-[#ff8e6e] text-white py-2 rounded">
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
             LOGIN
           </button>
 
-          <p className="text-center text-white mt-4 cursor-pointer">Esqueci minha senha</p>
+          <p className="text-center text-gray-600 mt-4 cursor-pointer hover:underline">
+            Esqueci minha senha
+          </p>
         </form>
       </div>
 
-      {/* Footer fixo ocupando toda a largura */}
       <div className="w-full fixed bottom-0 left-0">
         <Footer />
       </div>
