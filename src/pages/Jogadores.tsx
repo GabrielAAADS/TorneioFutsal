@@ -13,7 +13,6 @@ interface Jogador {
   idade: number;
   matricula: string;
   id_equipe: string;
-  imagem?: string;
 }
 
 export const PosicaoFutsalEnum = z.enum([
@@ -29,9 +28,6 @@ const schema = z.object({
   posicao: PosicaoFutsalEnum,
   idade: z.number().min(10, 'A idade mínima é 10 anos'),
   matricula: z.string().min(5, 'A matrícula deve ter pelo menos 5 caracteres'),
-  imagem: z
-    .instanceof(FileList)
-    .refine((files) => files.length > 0, 'A imagem é obrigatória'),
 });
 
 export default function Jogadores({ idEquipe }: { idEquipe: string }) {
@@ -43,7 +39,6 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
   const [jogadorSelecionado, setJogadorSelecionado] = useState<Jogador | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     carregarJogadores();
@@ -74,13 +69,8 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
     try {
       if (!jogadorSelecionado) return;
 
-      const formData = new FormData();
-      formData.append("nome", jogadorSelecionado.nome);
-      formData.append("posicao", jogadorSelecionado.posicao);
-      formData.append("idade", jogadorSelecionado.idade.toString());
-      if (selectedFile) formData.append("imagem", selectedFile);
-
-      await atualizarJogador(jogadorSelecionado.id, formData);
+      const { id, nome, posicao, idade } = jogadorSelecionado;
+      await atualizarJogador(id, { nome, posicao, idade });
 
       alert('Jogador atualizado!');
       setJogadorSelecionado(null);
@@ -94,7 +84,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
 
   const onSubmit = async (jogador: any) => {
     try {
-      const response = await cadastrarJogador({ ...jogador, id_equipe: idEquipe, });
+      const response = await cadastrarJogador({ ...jogador, id_equipe: idEquipe });
       alert('Jogador cadastrado com sucesso!');
       reset();
       carregarJogadores();
@@ -165,13 +155,6 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
               className="border p-2 w-full mt-2"
               placeholder="Idade"
             />
-
-            {jogadorSelecionado?.imagem && (
-              <img src={jogadorSelecionado.imagem} alt="Imagem do jogador" className="mt-2 w-24 h-24 object-cover" />
-            )}
-
-            <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} className="border p-2 w-full mt-2" />
-
             <div className="flex justify-end gap-2 mt-4">
               <Dialog.Close asChild>
                 <button className="bg-red-500 text-white p-2 rounded">Cancelar</button>
