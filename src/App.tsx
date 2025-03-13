@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import { JSX } from "react";
 import Login from './pages/Login';
+import Register from './pages/RegistrarProfessor'; 
 import Torneios from './pages/Torneios';
 import PerfilProfessor from './pages/PerfilProfessor';
 import EquipeDetalhes from './pages/EquipeDetalhes';
@@ -21,6 +22,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} /> {/* Nova rota adicionada */}
           <Route
             path="/*"
             element={
