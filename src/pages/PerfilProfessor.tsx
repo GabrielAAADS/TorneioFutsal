@@ -15,6 +15,7 @@ export default function PerfilProfessor() {
     const [email, setEmail] = useState("");
     const [novaSenha, setNovaSenha] = useState("");
     const [carregando, setCarregando] = useState(true);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     useEffect(() => {
         async function carregarProfessor() {
@@ -46,10 +47,15 @@ export default function PerfilProfessor() {
             if (!professor) return;
             console.log(nome, cref, email, novaSenha);
 
-            const dadosAtualizados: any = { nome, cref, email };
-            if (novaSenha.trim() !== "") dadosAtualizados.senha = novaSenha;
-
-            await atualizarProfessor(dadosAtualizados);
+            const formData = new FormData();
+            formData.append("nome", nome);
+            formData.append("cref", cref);
+            formData.append("email", email);
+            if (novaSenha.trim() !== "") formData.append("senha", novaSenha);
+            if (selectedFile) formData.append("imagem", selectedFile);
+            
+            await atualizarProfessor(formData);
+            
             setProfessor({ ...professor, nome, cref, email });
             alert("Perfil atualizado com sucesso!");
             setEditando(false);
@@ -82,8 +88,18 @@ export default function PerfilProfessor() {
         <div className="p-4">
             <h1 className="text-xl font-bold mb-4">Perfil do Professor</h1>
 
+            {professor?.imagem && (
+                <img src={professor.imagem} alt="Foto do Professor" className="w-24 h-24 object-cover rounded-full mx-auto mb-4" />
+            )}
+
             {editando ? (
                 <>
+                    <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} 
+                        className="border p-2 w-full mt-2"
+                    />
                     <input value={nome} onChange={(e) => setNome(e.target.value)} className="border p-2 w-full" placeholder="Nome" />
                     <input value={cref} onChange={(e) => setCref(e.target.value)} className="border p-2 w-full mt-2" placeholder="CREF" />
                     <input value={email} onChange={(e) => setEmail(e.target.value)} className="border p-2 w-full" placeholder="Email" />

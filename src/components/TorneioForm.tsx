@@ -37,7 +37,7 @@ const schema = z.object({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
           const file = e.target.files[0];
-          console.log("Arquivo selecionado:", file); // 👀 Verifique o nome do arquivo no console
+          console.log("Arquivo selecionado:", file);
           setSelectedFile(file);
       }
   };  
