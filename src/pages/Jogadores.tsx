@@ -105,7 +105,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
         formData.append('imagem', data.imagem[0]);
       }
       
-      const response = await cadastrarJogador(formData);
+      await cadastrarJogador(formData);
       alert('Jogador cadastrado com sucesso!');
       reset();
       carregarJogadores();
@@ -114,7 +114,6 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
       alert('Erro ao cadastrar jogador.');
     }
   };
-  
   
   return (
     <div className="p-4">
@@ -153,7 +152,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
           <li key={jogador.id} className="border p-2 flex justify-between">
             <span>{jogador.nome} - {jogador.posicao}</span>
             <div>
-	          <button onClick={() => { setJogadorSelecionado(jogador); setIsTransferOpen(true); }} className="bg-blue-500 text-white p-1 mx-1">Mover</button>
+              <button onClick={() => { setJogadorSelecionado(jogador); setIsTransferOpen(true); }} className="bg-blue-500 text-white p-1 mx-1">Mover</button>
               <button onClick={() => handleEditar(jogador.id)} className="bg-yellow-500 text-white p-1 mx-1">Editar</button>
               <button
                 onClick={async () => {
@@ -228,7 +227,12 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
               />
             )}
 
-            <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} className="border p-2 w-full mt-2" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              className="border p-2 w-full mt-2"
+            />
 
             <div className="flex justify-end gap-2 mt-4">
               <Dialog.Close asChild>
