@@ -49,7 +49,10 @@ export default function EquipeForm({ equipe, idTorneio, onEquipeCriada }: { equi
       {equipe?.id && (
         <button
           type="button"
-          onClick={() => navigate(`/equipe/${equipe.id}/informacoes`)}
+          onClick={() => {
+            console.log("ID da equipe:", equipe?.id)
+            navigate(`/equipe/${equipe.id}`)
+          }}
           className="bg-gray-500 text-white p-2 rounded w-full"
         >
           Detalhes

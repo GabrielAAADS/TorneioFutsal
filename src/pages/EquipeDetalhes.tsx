@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, NavLink, Route, Routes } from "react-router-dom";
+import { useParams, useNavigate, NavLink, Route, Routes, Navigate, useResolvedPath } from "react-router-dom";
 import { buscarEquipePorID, atualizarEquipe, excluirEquipe } from "../services/equipeService";
 import Jogadores from "../pages/Jogadores";
 
@@ -11,6 +11,8 @@ export default function EquipeDetalhes() {
   const [editando, setEditando] = useState(false);
   const [novoNome, setNovoNome] = useState("");
   const [novoLema, setNovoLema] = useState("");
+  const basePath = useResolvedPath("").pathname;
+
 
   useEffect(() => {
     async function carregarEquipe() {
@@ -90,6 +92,7 @@ export default function EquipeDetalhes() {
       </div>
 
       <Routes>
+        <Route index element={<Navigate to="informacoes" replace />} />
         <Route path="informacoes" element={
           <div>
             {editando ? (

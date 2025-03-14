@@ -31,7 +31,7 @@ export default function App() {
                     <Route path="/torneios" element={<ProtectedRoute><Torneios /></ProtectedRoute>} />
                     <Route path="/professor/detalhes" element={<ProtectedRoute><PerfilProfessor /></ProtectedRoute>} />
                     <Route path="/professores" element={<ProtectedRoute><Professores /></ProtectedRoute>} />
-                    <Route path="/equipe/:id" element={<ProtectedRoute><EquipeDetalhes /></ProtectedRoute>} />
+                    <Route path="/equipe/:id/*" element={<ProtectedRoute><EquipeDetalhes /></ProtectedRoute>} />
                     <Route path="*" element={<Navigate to="/torneios" replace />} />
                   </Routes>
                 </div>

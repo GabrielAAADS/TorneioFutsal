@@ -49,7 +49,10 @@ export default function Professores() {
                         <span>{prof.nome} - {prof.email}</span>
                         <div>
                             <button 
-                                onClick={() => navigate(`/perfil/${prof.id}`)} 
+                                onClick={() => {
+                                    console.log(prof.id)
+                                    navigate(`/perfil/${prof.id}`)
+                                }} 
                                 className="bg-blue-500 text-white p-1 mx-1"
                             >
                                 Detalhes

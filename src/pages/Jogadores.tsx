@@ -62,7 +62,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
   const handleEditar = async (id: string) => {
     try {
       const response = await buscarJogadorPorID(id);
-      setJogadorSelecionado(response.data);
+      setJogadorSelecionado(response.data.jogador);
       setIsOpen(true);
     } catch (error) {
       console.error('Erro ao buscar jogador:', error);
@@ -78,6 +78,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
       formData.append("nome", jogadorSelecionado.nome);
       formData.append("posicao", jogadorSelecionado.posicao);
       formData.append("idade", jogadorSelecionado.idade.toString());
+      formData.append("matricula", jogadorSelecionado.matricula);
       if (selectedFile) formData.append("imagem", selectedFile);
 
       await atualizarJogador(jogadorSelecionado.id, formData);
@@ -92,9 +93,19 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
     }
   };
 
-  const onSubmit = async (jogador: any) => {
+  const onSubmit = async (data: any) => {
     try {
-      const response = await cadastrarJogador({ ...jogador, id_equipe: idEquipe, });
+      const formData = new FormData();
+      formData.append('nome', data.nome);
+      formData.append('posicao', data.posicao);
+      formData.append('idade', data.idade.toString());
+      formData.append('matricula', data.matricula);
+      formData.append('id_equipe', idEquipe);
+      if (data.imagem && data.imagem[0]) {
+        formData.append('imagem', data.imagem[0]);
+      }
+      
+      const response = await cadastrarJogador(formData);
       alert('Jogador cadastrado com sucesso!');
       reset();
       carregarJogadores();
@@ -103,6 +114,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
       alert('Erro ao cadastrar jogador.');
     }
   };
+  
   
   return (
     <div className="p-4">
@@ -125,6 +137,14 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
         <input {...register('matricula')} placeholder="Matrícula" className="border p-2 w-full" />
         {errors.matricula && <p className="text-red-500">{errors.matricula.message}</p>}
 
+        <input
+          type="file"
+          accept="image/*"
+          {...register('imagem')}
+          className="border p-2 w-full mt-2"
+        />
+        {errors.imagem && <p className="text-red-500">{errors.imagem.message}</p>}
+
         <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Cadastrar</button>
       </form>
       
@@ -135,7 +155,19 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
             <div>
 	          <button onClick={() => { setJogadorSelecionado(jogador); setIsTransferOpen(true); }} className="bg-blue-500 text-white p-1 mx-1">Mover</button>
               <button onClick={() => handleEditar(jogador.id)} className="bg-yellow-500 text-white p-1 mx-1">Editar</button>
-              <button onClick={() => excluirJogador(jogador.id)} className="bg-red-500 text-white p-1">Excluir</button>
+              <button
+                onClick={async () => {
+                  try {
+                    await excluirJogador(jogador.id);
+                    carregarJogadores();
+                  } catch (error) {
+                    console.error("Erro ao excluir jogador:", error);
+                  }
+                }}
+                className="bg-red-500 text-white p-1"
+              >
+                Excluir
+              </button>
             </div>
           </li>
         ))}
@@ -152,12 +184,23 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
               className="border p-2 w-full"
               placeholder="Nome"
             />
-            <input
+
+            <select
               value={jogadorSelecionado?.posicao || ''}
-              onChange={(e) => setJogadorSelecionado((prev) => prev ? { ...prev, posicao: e.target.value } : prev)}
+              onChange={(e) =>
+                setJogadorSelecionado((prev) =>
+                  prev ? { ...prev, posicao: e.target.value } : null
+                )
+              }
               className="border p-2 w-full mt-2"
-              placeholder="Posição"
-            />
+            >
+              {Object.values(PosicaoFutsalEnum.Values).map((posicao) => (
+                <option key={posicao} value={posicao}>
+                  {posicao}
+                </option>
+              ))}
+            </select>
+
             <input
               value={jogadorSelecionado?.idade || ''}
               onChange={(e) => setJogadorSelecionado((prev) => prev ? { ...prev, idade: Number(e.target.value) } : prev)}
@@ -166,8 +209,23 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
               placeholder="Idade"
             />
 
+            <input
+              value={jogadorSelecionado?.matricula || ''}
+              onChange={(e) =>
+                setJogadorSelecionado((prev) =>
+                  prev ? { ...prev, matricula: e.target.value } : null
+                )
+              }
+              className="border p-2 w-full mt-2"
+              placeholder="Matrícula"
+            />
+
             {jogadorSelecionado?.imagem && (
-              <img src={jogadorSelecionado.imagem} alt="Imagem do jogador" className="mt-2 w-24 h-24 object-cover" />
+              <img
+                src={`http://localhost:3000/uploads/${jogadorSelecionado.imagem}`}
+                alt="Imagem do jogador"
+                className="mt-2 w-24 h-24 object-cover"
+              />
             )}
 
             <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} className="border p-2 w-full mt-2" />

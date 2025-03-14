@@ -5,14 +5,13 @@ import { AuthContext } from '../context/AuthContext';
 import TorneioForm from '../components/TorneioForm';
 import Equipes from './Equipes';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useNavigate } from 'react-router-dom';
-import { FaUserCircle } from "react-icons/fa";
 
 interface Torneio {
   id: string;
   descricao: string;
   data: string;
   campus: string;
+  img_local: string;
   equipes?: string[];
 }
 
@@ -28,8 +27,7 @@ export default function Torneios() {
   const [isOpen, setIsOpen] = useState(false);
   const [isManageOpen, setIsManageOpen] = useState(false);
   const [loadingEquipes, setLoadingEquipes] = useState(false);
-  const { logout } = useContext(AuthContext);
-
+  
   useEffect(() => {
     carregarTorneios();
     carregarEquipes();
@@ -110,6 +108,13 @@ export default function Torneios() {
         {torneios.map((torneio) => (
           <li key={torneio.id} className="border p-2 flex justify-between">
             <span>{torneio.descricao} - {torneio.campus}</span>
+            {torneio?.img_local && (
+              <img
+                src={`http://localhost:3000/uploads/${torneio?.img_local}`}
+                alt="Imagem do torneio"
+                className="mt-2 w-24 h-24 object-cover"
+              />
+            )}
             <div>
               <button onClick={() => handleSelecionarTorneio(torneio.id)} className="bg-blue-500 text-white p-1 mx-1">Gerenciar Equipes</button>
               <button onClick={() => { setTorneioSelecionado(torneio); setIsOpen(true); }} className="bg-yellow-500 text-white p-1 mx-1">Editar</button>
