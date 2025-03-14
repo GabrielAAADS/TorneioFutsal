@@ -5,14 +5,9 @@ const getAuthHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// export const cadastrarProfessor = async (data: { nome: string; cref: string; email: string; senha: string }) => {
-//   return api.post('/professor', data, { headers: { ...getAuthHeaders() } });
-// };
-
-export const cadastrarProfessor = async (data: FormData) => {
-  return api.post('/professor', data, { headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' } });
+export const cadastrarProfessor = async (data: { nome: string; cref: string; email: string; senha: string }) => {
+  return api.post('/professor', data, { headers: { ...getAuthHeaders() } });
 };
-
 
 export const loginProfessor = async (data: { email: string; senha: string }) => {
   return api.post('/professor/login', data, { headers: { ...getAuthHeaders() } });
@@ -26,12 +21,8 @@ export const buscarProfessorPorID = async (id: string) => {
   return api.get(`/professor/${id}`, { headers: { ...getAuthHeaders() } });
 };
 
-// export const atualizarProfessor = async (data: { nome?: string; cref?: string }) => {
-//   return api.put('/professor', data, { headers: { ...getAuthHeaders() } });
-// };
-
-export const atualizarProfessor = async (data: FormData) => {
-  return api.put('/professor', data, { headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' } });
+export const atualizarProfessor = async (data: { nome?: string; cref?: string }) => {
+  return api.put('/professor', data, { headers: { ...getAuthHeaders() } });
 };
 
 export const editarEmailSenha = async (data: { email?: string; senha?: string }) => {
