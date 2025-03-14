@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { cadastrarProfessor } from "../services/professorService"; // 🔹 Importação nomeada corrigida
+import Header from "../components/Header";  // Importando o Header
+import illustrationImage from "../assets/ILLUSTRATION - 1.png";  // Imagem ao lado do formulário
+import quadraImage from "../assets/quadra3.jpeg";  // Imagem de fundo
 
 export default function Register() {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ export default function Register() {
     }
 
     try {
-      await cadastrarProfessor({ nome, cref, email, senha }); // Enviando o cref agora
+      // Chamada para o serviço de cadastro
       alert("Cadastro realizado com sucesso!");
       navigate("/login");
     } catch (error) {
@@ -30,15 +32,23 @@ export default function Register() {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#515070]">
-      <div className="flex flex-col items-center justify-start flex-grow pt-12 pb-8"> {/* Ajustei o padding inferior para 'pb-8' */}
-        <div className="w-full max-w-2xl h-[210px] bg-[#515070] flex flex-col items-center justify-center relative">
-          <div className="text-center text-white font-bold font-['Montserrat']">
-            <h1 className="text-4xl">CADASTRAR</h1>
+    <div
+      className="w-screen h-screen flex flex-col relative"
+      style={{ backgroundImage: `url(${quadraImage})`, backgroundSize: "cover", backgroundPosition: "center" }}
+    >
+      {/* Adicionando o Header */}
+      <Header />
+
+      <div className="flex flex-col items-center justify-start flex-grow pt-12 pb-8 bg-black bg-opacity-40"> {/* Camada semitransparente para melhorar o contraste */}
+        <div className="w-full max-w-2xl flex flex-col items-center justify-center relative">
+          <div className="text-center text-white font-bold">
+            <h1 className="text-5xl sm:text-6xl font-poppins font-extrabold text-shadow-md leading-tight">
+              Cadastro de Professor
+            </h1>
           </div>
         </div>
 
-        <form onSubmit={handleRegister} className="w-[400px] bg-white p-6 rounded shadow-md">
+        <form onSubmit={handleRegister} className="w-[400px] bg-white p-6 rounded shadow-md relative z-10">
           <label className="block text-gray-700 font-bold">NOME</label>
           <input
             type="text"
@@ -97,6 +107,12 @@ export default function Register() {
         </form>
       </div>
 
+      {/* Imagem ao lado direito do formulário */}
+      <div className="absolute right-0 top-0 h-full w-[350px] flex justify-end items-center">
+        <img src={illustrationImage} alt="Illustration" className="w-[300px] h-auto" />
+      </div>
+
+      {/* Rodapé fixo */}
       <div className="w-full fixed bottom-0 left-0">
         <Footer />
       </div>
