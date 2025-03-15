@@ -79,33 +79,33 @@ export default function PerfilProfessor() {
     if (!professor) return <p>Erro ao carregar perfil.</p>;
 
     return (
-        <div className="p-4">
-            <h1 className="text-xl font-bold mb-4">Perfil do Professor</h1>
+        <div className="container mx-auto px-4 py-6">
+            <h1 className="text-2xl font-bold mb-6">Perfil do Professor</h1>
 
             {editando ? (
                 <>
-                    <input value={nome} onChange={(e) => setNome(e.target.value)} className="border p-2 w-full" placeholder="Nome" />
-                    <input value={cref} onChange={(e) => setCref(e.target.value)} className="border p-2 w-full mt-2" placeholder="CREF" />
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} className="border p-2 w-full" placeholder="Email" />
-                    <input type="password" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} className="border p-2 w-full mt-2" placeholder="Nova Senha (opcional)" />
-                    <button onClick={handleSalvarEdicao} className="bg-green-500 text-white p-2 rounded mt-2">Salvar</button>
+                    <input value={nome} onChange={(e) => setNome(e.target.value)} className="border p-2 w-full mb-2 rounded" placeholder="Nome" />
+                    <input value={cref} onChange={(e) => setCref(e.target.value)} className="border p-2 w-full mb-2 rounded" placeholder="CREF" />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} className="border p-2 w-full mb-2 rounded" placeholder="Email" />
+                    <input type="password" value={novaSenha} onChange={(e) => setNovaSenha(e.target.value)} className="border p-2 w-full mb-4 rounded" placeholder="Nova Senha (opcional)" />
+                    <button onClick={handleSalvarEdicao} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Salvar</button>
                 </>
             ) : (
                 <>
-                    <p><strong>Nome:</strong> {professor.nome}</p>
-                    <p><strong>CREF:</strong> {professor.cref}</p>
-                    <p><strong>Email:</strong> {professor.email}</p>
+                    <p className="mb-2"><strong>Nome:</strong> {professor.nome}</p>
+                    <p className="mb-2"><strong>CREF:</strong> {professor.cref}</p>
+                    <p className="mb-4"><strong>Email:</strong> {professor.email}</p>
                 </>
             )}
 
             {user?.id === professor.id && (
                 <>
-                    <button onClick={() => setEditando(true)} className="bg-blue-500 text-white p-2 rounded mt-4">Editar</button>
-                    <button onClick={handleExcluir} className="bg-red-500 text-white p-2 rounded mt-4 block">Excluir Conta</button>
+                    <button onClick={() => setEditando(true)} className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mt-4">Editar</button>
+                    <button onClick={handleExcluir} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded mt-4 block">Excluir Conta</button>
                 </>
             )}
 
-            <button onClick={() => navigate("/professores")} className="bg-gray-500 text-white p-2 rounded mt-4">Voltar</button>
+            <button onClick={() => navigate("/professores")} className="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded mt-4">Voltar</button>
         </div>
     );
 }

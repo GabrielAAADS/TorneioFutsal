@@ -10,10 +10,12 @@ import EquipeDetalhes from './pages/EquipeDetalhes';
 import Professores from './pages/Professores';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Graficos from './components/Graficos';
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { user } = useContext(AuthContext);
-  return user ? children : <Navigate to="/login" replace />;
+  console.log(user)
+  return <AuthProvider> {user ? children : <Navigate to="/login" replace />} </AuthProvider>;
 }
 
 export default function App() {
@@ -22,11 +24,11 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} /> {/* Nova rota adicionada */}
+          <Route path="/register" element={<Register />} />
           <Route
             path="/*"
             element={
-              <div className="flex flex-col min-h-screen">
+              <div className="flex flex-col min-h-screen w-full container mx-auto px-4 py-6">
                 <Header />
                 <div className="flex-grow">
                   <Routes>
@@ -34,6 +36,7 @@ export default function App() {
                     <Route path="/professor/detalhes" element={<ProtectedRoute><PerfilProfessor /></ProtectedRoute>} />
                     <Route path="/professores" element={<ProtectedRoute><Professores /></ProtectedRoute>} />
                     <Route path="/equipe/:id/*" element={<ProtectedRoute><EquipeDetalhes /></ProtectedRoute>} />
+                    <Route path="/graficos" element={<ProtectedRoute><Graficos /></ProtectedRoute>} />
                     <Route path="*" element={<Navigate to="/torneios" replace />} />
                   </Routes>
                 </div>

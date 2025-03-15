@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { atualizarTorneio } from '../services/torneioService';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Torneio {
   id: string;
@@ -18,7 +19,7 @@ interface TorneioModalProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   torneioSelecionado: Torneio | null;
-  setTorneioSelecionado: (torneio: Torneio | null) => void;
+  setTorneioSelecionado: Dispatch<SetStateAction<Torneio | null>>;
   carregarTorneios: () => void;
   equipes: Equipe[];
 }
@@ -28,13 +29,11 @@ export default function TorneioModal({ isOpen, setIsOpen, torneioSelecionado, se
     try {
       if (!torneioSelecionado) return;
 
-      // Criando FormData para enviar os dados corretamente
       const formData = new FormData();
       formData.append('descricao', torneioSelecionado.descricao);
       formData.append('data', torneioSelecionado.data);
       formData.append('campus', torneioSelecionado.campus);
 
-      // Adicionando equipes ao FormData
       if (torneioSelecionado.equipes) {
         torneioSelecionado.equipes.forEach((equipeId) => {
           formData.append('equipes[]', equipeId);
@@ -59,7 +58,6 @@ export default function TorneioModal({ isOpen, setIsOpen, torneioSelecionado, se
         <Dialog.Content className="fixed bg-white p-6 rounded shadow-md inset-1/3">
           <Dialog.Title className="text-lg font-bold">Editar Torneio</Dialog.Title>
 
-          {/* Input para editar descrição */}
           <input
             value={torneioSelecionado?.descricao || ''}
             onChange={(e) =>

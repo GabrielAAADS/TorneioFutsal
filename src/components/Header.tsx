@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { FaBars, FaUserCircle } from "react-icons/fa";
+import { FaBars, FaUserCircle, FaChartBar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
@@ -22,6 +22,12 @@ export default function Header() {
           />
         )}
 
+       <FaChartBar
+          className="text-white text-3xl cursor-pointer hover:text-gray-400 transition duration-200"
+          onClick={() => navigate("/graficos")}
+          title="Ver Gráficos"
+        />
+        
         <button 
           onClick={logout} 
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200"

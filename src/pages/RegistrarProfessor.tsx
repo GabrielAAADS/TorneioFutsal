@@ -1,26 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { cadastrarProfessor } from "../services/professorService"; // 🔹 Importação nomeada corrigida
+import { cadastrarProfessor } from "../services/professorService";
 
 export default function Register() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
-  const [cref, setCref] = useState(""); // Novo estado para CREF
+  const [cref, setCref] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (senha !== confirmarSenha) {
       alert("As senhas não coincidem.");
       return;
     }
-
+  
+    const formData = new FormData();
+    formData.append("nome", nome);
+    formData.append("cref", cref);
+    formData.append("email", email);
+    formData.append("senha", senha);
+  
     try {
-      await cadastrarProfessor({ nome, cref, email, senha }); // Enviando o cref agora
+      await cadastrarProfessor(formData);
       alert("Cadastro realizado com sucesso!");
       navigate("/login");
     } catch (error) {
@@ -31,7 +37,7 @@ export default function Register() {
 
   return (
     <div className="w-screen h-screen flex flex-col bg-[#515070]">
-      <div className="flex flex-col items-center justify-start flex-grow pt-12 pb-8"> {/* Ajustei o padding inferior para 'pb-8' */}
+      <div className="flex flex-col items-center justify-start flex-grow pt-12 pb-8">
         <div className="w-full max-w-2xl h-[210px] bg-[#515070] flex flex-col items-center justify-center relative">
           <div className="text-center text-white font-bold font-['Montserrat']">
             <h1 className="text-4xl">CADASTRAR</h1>

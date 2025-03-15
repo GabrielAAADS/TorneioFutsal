@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, NavLink, Route, Routes, Navigate, useResolvedPath } from "react-router-dom";
+import { useParams, useNavigate, NavLink, Route, Routes, Navigate } from "react-router-dom";
 import { buscarEquipePorID, atualizarEquipe, excluirEquipe } from "../services/equipeService";
 import Jogadores from "../pages/Jogadores";
 
@@ -11,8 +11,6 @@ export default function EquipeDetalhes() {
   const [editando, setEditando] = useState(false);
   const [novoNome, setNovoNome] = useState("");
   const [novoLema, setNovoLema] = useState("");
-  const basePath = useResolvedPath("").pathname;
-
 
   useEffect(() => {
     async function carregarEquipe() {
@@ -84,11 +82,22 @@ export default function EquipeDetalhes() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Detalhes da Equipe</h1>
+      <h1 className="text-2xl font-bold mb-4">Detalhes da Equipe</h1>
 
-      <div className="border-b mb-4 flex space-x-4">
-        <NavLink to={`/equipe/${id}/informacoes`} className="p-2">Informações</NavLink>
-        <NavLink to={`/equipe/${id}/jogadores`} className="p-2">Jogadores</NavLink>
+      <div className="border-b mb-4 flex space-x-4 text-gray-700">
+        <NavLink 
+          to={`/equipe/${id}/informacoes`} 
+          className="p-2 hover:text-blue-600"
+        >
+          Informações
+        </NavLink>
+        
+        <NavLink 
+          to={`/equipe/${id}/jogadores`} 
+          className="p-2 hover:text-blue-600"
+        >
+          Jogadores
+        </NavLink>
       </div>
 
       <Routes>
@@ -97,10 +106,10 @@ export default function EquipeDetalhes() {
           <div>
             {editando ? (
               <>
-                <input value={novoNome} onChange={(e) => setNovoNome(e.target.value)} className="border p-2 w-full" />
-                <input value={novoLema} onChange={(e) => setNovoLema(e.target.value)} className="border p-2 w-full mt-2" />
-                <button onClick={handleSalvarEdicao} className="bg-green-500 text-white p-2 rounded mt-2">Salvar</button>
-                <button onClick={() => setEditando(false)} className="bg-gray-500 text-white p-2 rounded mt-2 ml-2">Cancelar</button>
+                <input value={novoNome} onChange={(e) => setNovoNome(e.target.value)} className="border p-2 w-full mb-2 rounded" />
+                <input value={novoLema} onChange={(e) => setNovoLema(e.target.value)} className="border p-2 w-full mb-2 rounded" />
+                <button onClick={handleSalvarEdicao} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded mt-2">Salvar</button>
+                <button onClick={() => setEditando(false)} className="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded mt-2 ml-2">Cancelar</button>
               </>
             ) : (
               <>
@@ -110,7 +119,7 @@ export default function EquipeDetalhes() {
               </>
             )}
 
-            <button onClick={handleExcluirEquipe} className="bg-red-500 text-white p-2 rounded mt-4 block">
+            <button onClick={handleExcluirEquipe} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded mt-4 block">
               Excluir Equipe
             </button>
           </div>

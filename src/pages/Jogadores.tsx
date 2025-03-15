@@ -45,18 +45,91 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  const posicoes = Object.values(PosicaoFutsalEnum.Values);
+
+  const [titulares, setTitulares] = useState<{[key: string]: Jogador | null}>({});
+  const [reservas, setReservas] = useState<{[key: string]: Jogador | null}>({});
+
   useEffect(() => {
     carregarJogadores();
+    const initTitulares: {[key: string]: Jogador | null} = {};
+    const initReservas: {[key: string]: Jogador | null} = {};
+    
+    posicoes.forEach(pos => {
+      initTitulares[pos] = null;
+      initReservas[pos] = null;
+    });
+    setTitulares(initTitulares);
+    setReservas(initReservas);
+
   }, [idEquipe]);
 
   const carregarJogadores = async () => {
     try {
       const response = await buscarJogadores();
       setJogadores(response.data.filter((jogador: Jogador) => jogador.id_equipe === idEquipe));
+      distribuirJogadores(response.data.filter((j: Jogador) => j.id_equipe === idEquipe));
     } catch (error) {
       console.error('Erro ao carregar jogadores:', error);
       alert('Erro ao carregar jogadores.');
     }
+  };
+
+  const distribuirJogadores = (lista: Jogador[]) => {
+    const newTitulares: {[key: string]: Jogador | null} = {};
+    const newReservas: {[key: string]: Jogador | null} = {};
+    posicoes.forEach(pos => {
+      const jPos = lista.filter(j => j.posicao === pos);
+      if (jPos.length === 0) {
+        newTitulares[pos] = null;
+        newReservas[pos] = null;
+      } else if (jPos.length === 1) {
+        newTitulares[pos] = jPos[0];
+        newReservas[pos] = null;
+      } else if (jPos.length >= 2) {
+        newTitulares[pos] = jPos[0];
+        newReservas[pos] = jPos[1];
+        if (jPos.length > 2) {
+          alert(`Limite máximo para a posição ${pos} atingido (2)!`);
+        }
+      }
+    });
+    setTitulares(newTitulares);
+    setReservas(newReservas);
+  };
+
+  const trocarTitularReserva = (pos: string, modo: 'titular'|'reserva') => {
+    if (!confirm("Mudar a escalação?")) return;
+
+    const currentTitular = titulares[pos];
+    const currentReserva = reservas[pos];
+
+    setTitulares(prevTitulares => {
+      const titular = prevTitulares[pos];
+      const reserva = reservas[pos];
+    
+      setReservas(prev => ({
+        ...prev,
+        [pos]: titular
+      }));
+    
+      return {
+        ...prevTitulares,
+        [pos]: reserva
+      };
+    });
+
+    const substitutions = JSON.parse(localStorage.getItem("substitutions") || "[]");
+    substitutions.push({
+      time: new Date().toISOString(),
+      idEquipe: idEquipe,
+      posicao: pos,
+      deTitular: currentTitular ? currentTitular.nome : null,
+      deReserva: currentReserva ? currentReserva.nome : null,
+      newTitular: currentReserva ? currentReserva.nome : null,
+      newReserva: currentTitular ? currentTitular.nome : null
+    });
+    localStorage.setItem("substitutions", JSON.stringify(substitutions));
   };
 
   const handleEditar = async (id: string) => {
@@ -115,6 +188,23 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
     }
   };
   
+  function getCoordsFor(pos: string) {
+      switch (pos) {
+        case 'Goleiro':
+          return { top: '340%', left: '156%' };  
+        case 'Fixo':
+          return { top: '200%', left: '50%' };   
+        case 'Ala Direita':
+          return { top: '155%', left: '60%' };
+        case 'Ala Esquerda':
+          return { top: '30%', left: '40%' };
+        case 'Pivô':
+          return { top: '-80%', left: '50%' };
+        default:
+          return { top: '50%', left: '50%' };
+      }
+    }
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Jogadores</h1>
@@ -152,7 +242,7 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
           <li key={jogador.id} className="border p-2 flex justify-between">
             <span>{jogador.nome} - {jogador.posicao}</span>
             <div>
-              <button onClick={() => { setJogadorSelecionado(jogador); setIsTransferOpen(true); }} className="bg-blue-500 text-white p-1 mx-1">Mover</button>
+              <button onClick={() => { setJogadorSelecionado(jogador); setIsTransferOpen(true); }} className="bg-blue-500 text-white p-1 mx-1">Transferir</button>
               <button onClick={() => handleEditar(jogador.id)} className="bg-yellow-500 text-white p-1 mx-1">Editar</button>
               <button
                 onClick={async () => {
@@ -171,6 +261,92 @@ export default function Jogadores({ idEquipe }: { idEquipe: string }) {
           </li>
         ))}
       </ul>
+
+      <div className="flex mt-8">
+        <div className="relative w-2/3 mr-4" style={{ minHeight: '300px' }}>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'url("/futsal-half-court.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: 0.8
+            }}
+          />
+          <h2 className="font-bold mb-2">Titulares</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {posicoes.map(pos => {
+              const titular = titulares[pos];
+              const coords = getCoordsFor(pos);
+
+              return (
+                <div key={pos} className="relative cursor-pointer flex flex-col items-center justify-center absolute"
+                  style={{
+                    top: coords.top,
+                    left: coords.left,
+                    transform: 'translate(-50%, -50%)'
+                  }}
+                  onClick={() => {
+                    if (reservas[pos]) {
+                      trocarTitularReserva(pos, 'titular');
+                    }
+                  }}
+                  title="Clique para trocar com reserva"
+                >
+                  {titular ? (
+                    <>
+                      <img
+                        src={`http://localhost:3000/uploads/${titular.imagem}`}
+                        alt={titular.nome}
+                        className="w-full h-28 w-32 object-cover rounded-full mx-auto"
+                      />
+                      <p className="text-center mt-2">{titular.nome}</p>
+                    </>
+                  ) : (
+                    <div className="h-28 w-32 bg-gray-300 flex items-center justify-center rounded">
+                      <span className="text-gray-700 ">Vazio - {pos}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="w-1/3 flex flex-col-reverse items-end p-4">
+          <h2 className="font-bold mb-2">Reservas</h2>
+          <div className="flex flex-col-reverse space-y-4">
+            {posicoes.map(pos => {
+              const reserva = reservas[pos];
+              return (
+                <div key={pos} className="relative cursor-pointer flex flex-col items-center justify-center"
+                  onClick={() => {
+                    if (titulares[pos]) {
+                      trocarTitularReserva(pos, 'reserva');
+                    }
+                  }}
+                  title="Clique para trocar com titular"
+                >
+                  {reserva ? (
+                    <>
+                      <img
+                        src={`http://localhost:3000/uploads/${reserva.imagem}`}
+                        alt={reserva.nome}
+                        className="w-20 h-14 object-cover rounded"
+                      />
+                      <p className="text-center">{reserva.nome}</p>
+                    </>
+                  ) : (
+                    <div className="w-full h-20 bg-gray-300 flex items-center justify-center rounded">
+                      <span className="text-gray-700">Vazio - {pos}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
         <Dialog.Portal>
