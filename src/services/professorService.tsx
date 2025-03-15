@@ -9,7 +9,6 @@ export const cadastrarProfessor = async (data: FormData) => {
   return api.post('/professor', data, { headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' } });
 };
 
-
 export const loginProfessor = async (data: { email: string; senha: string }) => {
   return api.post('/professor/login', data, { headers: { ...getAuthHeaders() } });
 };

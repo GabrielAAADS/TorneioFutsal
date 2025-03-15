@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { FaBars, FaUserCircle, FaChartBar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/Group 10.png";  // Importe a logo
 
 export default function Header() {
   const { user, logout } = useContext(AuthContext);
@@ -35,6 +36,9 @@ export default function Header() {
           Sair
         </button>
       </div>
+
+      {/* Logo no canto direito */}
+      <img src={logo} alt="Logo" className="h-10 w-auto" />
     </header>
   );
 }

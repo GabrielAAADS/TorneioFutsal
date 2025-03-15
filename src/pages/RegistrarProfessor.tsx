@@ -44,7 +44,7 @@ export default function Register() {
           </div>
         </div>
 
-        <form onSubmit={handleRegister} className="w-[400px] bg-white p-6 rounded shadow-md">
+        <form onSubmit={handleRegister} className="w-[400px] bg-white p-6 rounded shadow-md relative z-10">
           <label className="block text-gray-700 font-bold">NOME</label>
           <input
             type="text"
